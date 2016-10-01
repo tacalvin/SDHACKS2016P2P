@@ -3,14 +3,12 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -24,7 +22,7 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
     private WifiP2pManager.Channel channel;
     private Activity activity;
     private P2PBroadcastReceiverAL actListener;
-    private P2PBroadcastReciverPL peerListener;
+    private P2PBroadcastReceiverPL peerListener;
 
     //Action Listener
     private class P2PBroadcastReceiverAL implements WifiP2pManager.ActionListener
@@ -44,10 +42,10 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
     }
 
     //Peer listen
-    private class P2PBroadcastReciverPL implements WifiP2pManager.PeerListListener
+    private class P2PBroadcastReceiverPL implements WifiP2pManager.PeerListListener
     {
         WifiP2pDeviceList list;
-        P2PBroadcastReciverPL(WifiP2pDeviceList list)
+        P2PBroadcastReceiverPL(WifiP2pDeviceList list)
         {
             this.list = list;
         }
@@ -66,7 +64,7 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
         this.channel = channel;
         this.activity = act;
         this.peers = new WifiP2pDeviceList();
-        this.peerListener = new P2PBroadcastReciverPL(this.peers);
+        this.peerListener = new P2PBroadcastReceiverPL(this.peers);
         this.actListener = new P2PBroadcastReceiverAL();
     }
 
@@ -101,6 +99,7 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
             for (Iterator<WifiP2pDevice> it = devices.iterator(); it.hasNext();)
             {
                 WifiP2pDevice dev = it.next();
+                Log.d("Devices",dev.deviceName);
                 if(dev.status == dev.FAILED || dev.status == dev.UNAVAILABLE)
                 {
                     devices.remove(dev);
