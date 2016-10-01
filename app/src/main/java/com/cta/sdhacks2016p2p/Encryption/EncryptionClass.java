@@ -1,9 +1,12 @@
 import java.lang.*;
-import java.math;
+import java.math.*;
 
 public class EncryptionClass {
 
-    public static class KeyGeneration {
+    public EncryptionClass()
+    {}
+
+    public class KeyGeneration {
         private int kSize;
         private BigInteger[] CArray; //ck = 1 and ci has (L-i) bits binary length for i = 1, ..., L-i
         private BigInteger[] bi; //bi = 2^(i-1)*ci for i = 1, ..., k
@@ -23,22 +26,20 @@ public class EncryptionClass {
         private BigInteger d; //1 < d < phi(n), e * d = 1 % phi(n)
 
         private BigInteger randomWithinRange(BigInteger min, BigInteger max) {
-            BigInteger range = (max-min)+1;
-            return (BigInteger)(Math.random()*range) + min;
+            BigInteger range = BigInteger.valueOf((max-min)+1);
+            return BigInteger.valueOf((Math.random()*range) + min);
         }
 
         public static BigInteger commputeBi(BigInteger i) {
-            return Math.pow(2, (i-1));
+            return BigInteger.valueOf(Math.pow(2, (i-1)));
         }
 
-        public static KeyGeneration(int kSize) {
+        public KeyGeneration(int kSize) {
             this.kSize = kSize;
             int[] cArray = new BigInteger[kSize];
             int[] bArray = new BigInteger[kSize];
             int[] aArray = new BigInteger[kSize];
         }
-
-        private static int
 
         public static void createKey(BigInteger[] privateKey, BigInteger[] publicKey) {
             // 1. randomly chooose k odd positive integers c1-ck
@@ -68,8 +69,6 @@ public class EncryptionClass {
 
         }
 
-
-
         public static int[] ExtendedEuclid(int a, int b)
         {
             int[] ans = new int[3];
@@ -91,8 +90,6 @@ public class EncryptionClass {
 
             return ans;
         }
-
-
 
 
     }
