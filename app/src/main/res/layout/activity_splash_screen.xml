@@ -19,6 +19,33 @@
         android:textSize="50sp"
         android:textStyle="bold" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/wifisignaloff"
+        android:src="@mipmap/wifisignaloff"
+        android:maxWidth="110dp"
+        android:maxHeight="200dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/imageView"
+        android:layout_toStartOf="@+id/imageView" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/wifisignalon"
+        android:src="@mipmap/wifisignalon"
+        android:maxWidth="110dp"
+        android:maxHeight="200dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/imageView"
+        android:layout_toStartOf="@+id/imageView"
+        android:visibility="invisible"/>
+        />
+
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
     <FrameLayout
@@ -45,6 +72,8 @@
                 android:text="@string/dummy_button" />
 
         </LinearLayout>
+
+
     </FrameLayout>
 
 </FrameLayout>
