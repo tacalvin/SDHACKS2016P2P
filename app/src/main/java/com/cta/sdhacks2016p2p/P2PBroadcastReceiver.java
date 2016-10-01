@@ -3,11 +3,16 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.NetworkInfo;
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
-import android.net.wifi.p2p.WifiP2pManager
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.IBinder;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Created by cta on 10/1/16.
@@ -15,6 +20,7 @@ import java.util.ArrayList;
 public class P2PBroadcastReceiver extends BroadcastReceiver
 {
     private WifiP2pManager manager;
+    private WifiP2pDeviceList peers;
     private WifiP2pManager.Channel channel;
     private Activity activity;
     private P2PBroadcastReceiverAL actListener;
@@ -26,22 +32,30 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
         @Override
         public void onSuccess()
         {
-
+            Log.d("GREEN", "Hurrah Wifi is alive");
         }
 
         @Override
         public void onFailure(int i)
         {
-
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(i);
         }
     }
 
     //Peer listen
     private class P2PBroadcastReciverPL implements WifiP2pManager.PeerListListener
     {
-        @Override
-        public void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList) {
+        WifiP2pDeviceList list;
+        P2PBroadcastReciverPL(WifiP2pDeviceList list)
+        {
+            this.list = list;
+        }
 
+        @Override
+        public void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList)
+        {
+            list = wifiP2pDeviceList;
         }
     }
 
@@ -51,7 +65,8 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
         this.manager = manager;
         this.channel = channel;
         this.activity = act;
-        this.peerListener = new P2PBroadcastReciverPL();
+        this.peers = new WifiP2pDeviceList();
+        this.peerListener = new P2PBroadcastReciverPL(this.peers);
         this.actListener = new P2PBroadcastReceiverAL();
     }
 
@@ -81,10 +96,26 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
         else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action))
         {
             // Respond to new connection or disconnections
+            Collection<WifiP2pDevice> devices = peers.getDeviceList();
+
+            for (Iterator<WifiP2pDevice> it = devices.iterator(); it.hasNext();)
+            {
+                WifiP2pDevice dev = it.next();
+                if(dev.status == dev.FAILED || dev.status == dev.UNAVAILABLE)
+                {
+                    devices.remove(dev);
+                    break;
+                }
+            }
+            manager.requestPeers(channel,peerListener);
+
+
         }
         else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action))
         {
+
             // Respond to this device's wifi state changing
+            Log.d("RED","WIFI IS CHANGING");
         }
     }
 
