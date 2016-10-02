@@ -3,6 +3,8 @@ import java.math.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static sun.security.krb5.Confounder.intValue;
+
 public class EncryptionClass {
 
     public EncryptionClass()
@@ -131,36 +133,16 @@ public class EncryptionClass {
     public class Encryption {
         //Sender executes the following steps
         private int kSize;
-        private char[] pRanStr;
+        private String rString;
         private BigInteger hamming;
         private BigInteger v;
         private BigInteger mHat;
         private BigInteger m;
         private BigInteger X;
-        private BigInteger mPrime;
+        private String mPrime;
         private ArrayList<BigInteger> dArray;
 
-        public Encryption(int kSize) {
-            this.kSize = kSize;
-        }
-
-        private char[] generateString(int size) {
-            char[] temp = new char[size];
-            for (int i = 0; i < size; i++) {
-                temp[i] = generateChar();
-            }
-            return temp;
-        }
-
-        private char generateChar() {
-            int temp = (int) (Math.random() * 64);
-            if (temp < 10) {
-                return (char) (temp + 38);
-            } else if (temp < 36) {
-                return (char) (temp + 55);
-            } else {
-                return (char) (temp + 61);
-            }
+        public Encryption() {
         }
 
         private BigInteger randomWithinRange(int min, int max) {
@@ -168,15 +150,54 @@ public class EncryptionClass {
             return BigInteger.valueOf((long)(Math.random() * range.doubleValue()) + min);
         }
 
-        private int hammingDistance(char[] arr, int size) {
-            for (int i = 0; i < size; i++) {
-
+        private String generateBinaryString(String userMessage) {
+            StringBuilder stringBuilder = new StringBuilder();
+            BigInteger binaryLength = BigInteger.valueOf(userMessage.length() * 8);
+            // i love and hate biginteger...
+            for (BigInteger i = BigInteger.valueOf(0); i.compareTo(binaryLength) < 1; i.add(BigInteger.valueOf(1))) {
+                stringBuilder.append(Math.random() * 1);
             }
+
+            /*
+            alternative idea replace with biginteger:
+            int resultString = (int) pow(2, userMessage.length()*8)
+            return resultString.toInteger();
+             */
+            return stringBuilder.toString();
         }
 
-        public void encryptMessage (ArrayList<BigInteger> privateKey) {
-            pRanStr = generateString(kSize);
+        private int hammingDistance(String str, int size) {
+            int count = 0;
+            int temp = Integer.parseInt(str);
+            for (int i = 0; i < size; i++) {
+                if (temp < 0) {
+                    count++;
+                }
+                temp = temp << 1;
+            }
+            return count;
+        }
 
+        public void encryptMessage (ArrayList<BigInteger> privateKey, String userMessage) {
+            do {
+                rString = generateBinaryString(userMessage);
+                hamming = BigInteger.valueOf(hammingDistance(rString, 16));
+            } while (BigInteger.valueOf(userMessage.length()).mod(hamming).compareTo(BigInteger.valueOf(0)) != 0);
+            v = BigInteger.valueOf(userMessage.length()).divide(hamming);
+
+            // "Sample message a user may be sending to someone else ,this will be used in visualizing the the encryption process."
+
+            // safety issues with the value of rString?
+            String userBinary = userMessage.getBytes().toString();
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for(int i = 0; i < rString.length(); i++) {
+                stringBuilder.append((rString.charAt(i) ^ userBinary.charAt(i)));
+            }
+
+            mPrime = stringBuilder.toString();
+            
         }
 
         //1 Generate pseudorandom string X = (x1,...,xk) with hamming weight h such that v = k/h be an integer
