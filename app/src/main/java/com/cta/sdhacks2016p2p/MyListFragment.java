@@ -17,12 +17,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyListFragment extends ListFragment implements OnItemClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
-        view.setId();
+        view.setId(R.id.textListing);
         return view;
     }
 
@@ -31,13 +32,12 @@ public class MyListFragment extends ListFragment implements OnItemClickListener 
         super.onActivityCreated(savedInstanceState);
 
         //START A MULTI-THREAD
-        ArrayList<String> list = new ArrayList<String>();
-        //UPDATE THE ARRAYLIST after every X seconds.
+        ArrayList<String> peerList = new ArrayList<String>();
         for(int i = 0; i < 10; i++)//size
         {
             ;
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.id.empty, list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,peerList);
         setListAdapter(adapter);
         getListView().setOnItemClickListener(this);
     }
