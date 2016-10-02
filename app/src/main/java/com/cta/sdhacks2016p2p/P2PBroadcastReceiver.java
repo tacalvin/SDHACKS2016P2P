@@ -8,6 +8,7 @@ import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.IBinder;
 import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -66,6 +67,7 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
         this.peers = new WifiP2pDeviceList();
         this.peerListener = new P2PBroadcastReceiverPL(this.peers);
         this.actListener = new P2PBroadcastReceiverAL();
+        manager.discoverPeers(channel,actListener);
     }
 
     @Override
@@ -117,6 +119,23 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
             Log.d("RED","WIFI IS CHANGING");
         }
     }
+
+    public WifiP2pManager getManager() {
+        return manager;
+    }
+
+    public WifiP2pDeviceList getPeers() {
+        return peers;
+    }
+
+    public WifiP2pManager.Channel getChannel() {
+        return channel;
+    }
+
+    public Activity getActivity() {
+        return activity;
+    }
+
 
 }
 
