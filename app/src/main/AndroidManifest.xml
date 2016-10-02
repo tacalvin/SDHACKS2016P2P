@@ -9,10 +9,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SplashScreen"
+            android:name="com.cta.sdhacks2016p2p.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_splash_screen"
-            android:theme="@style/FullscreenTheme">
+            android:label="@string/main_activity_screen">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
