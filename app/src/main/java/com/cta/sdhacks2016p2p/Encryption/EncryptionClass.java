@@ -1,6 +1,7 @@
 import java.lang.*;
 import java.math.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class EncryptionClass {
 
@@ -95,11 +96,11 @@ public class EncryptionClass {
             ArrayList<BigInteger>privateTemp = new ArrayList<BigInteger>(Arrays.asList(aArray));
             privateTemp.add(n);
             privateTemp.add(e);
-            ArrayList<BigInteger>publicKey = new ArrayList<BigInteger>(Arrays.asList(bArray));
-            publicKey.add(p);
-            publicKey.add(q);
-            publicKey.add(w);
-            publicKey.add(M);
+            ArrayList<BigInteger>publicTemp = new ArrayList<BigInteger>(Arrays.asList(bArray));
+            publicTemp.add(p);
+            publicTemp.add(q);
+            publicTemp.add(w);
+            publicTemp.add(M);
             privateKey = privateTemp;
             publicKey = publicTemp;
         }
@@ -109,7 +110,7 @@ public class EncryptionClass {
         public void ExtendedEuclid() {
             do {
                 d = (BigInteger.valueOf(1).mod(phiN)).divide(e);
-            } while(d.compareTo(BigInteger.valueOf(1) != 1 && d.compareTo(phiN) != 1));
+            } while(d.compareTo(BigInteger.valueOf(1)) != 1 && d.compareTo(phiN) != 1);
         }
     }
 
