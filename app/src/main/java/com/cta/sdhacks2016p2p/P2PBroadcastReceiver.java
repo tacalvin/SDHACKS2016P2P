@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.IBinder;
 import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +21,8 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
 {
     private WifiP2pManager manager;
     private WifiP2pDeviceList peers;
-    private WifiP2pManager.Channel channel;
-    private Activity activity;
+    private Channel channel;
+    private MainActivity activity;
     private P2PBroadcastReceiverAL actListener;
     private P2PBroadcastReceiverPL peerListener;
 
@@ -37,8 +38,9 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
         @Override
         public void onFailure(int i)
         {
+            Log.d("failed","failed to get wifi");
             android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(i);
+//            System.exit(i);
         }
     }
 
@@ -58,11 +60,11 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
         }
     }
 
-    public P2PBroadcastReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, Activity act)
+    public P2PBroadcastReceiver(WifiP2pManager manager, Channel chn, MainActivity act)
     {
         super();
         this.manager = manager;
-        this.channel = channel;
+        this.channel = chn;
         this.activity = act;
         this.peers = new WifiP2pDeviceList();
         this.peerListener = new P2PBroadcastReceiverPL(this.peers);
@@ -86,6 +88,7 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action))
         {
             // Check to see if Wi-Fi is enabled and notify appropriate activity
+            Log.d("WIFICHECK","Checking if wifi is on");
             manager.discoverPeers(channel,actListener);
         }
         else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action))
