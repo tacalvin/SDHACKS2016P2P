@@ -116,6 +116,10 @@ public class EncryptionClass {
 
     public class Encryption {
         //Sender executes the following steps
+        private int kSize;
+        private char[] pRanStr;
+        private int hamming;
+
 
         //1 Generate pseudorandom string X = (x1,...,xk) with hamming weight h such that v = k/h be an integer
         //hamming weight h such that v = k/h be an integer
