@@ -1,7 +1,11 @@
 import java.lang.*;
+import java.lang.reflect.Array;
 import java.math.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.function.BiConsumer;
 
 import static sun.security.krb5.Confounder.intValue;
 
@@ -138,8 +142,11 @@ public class EncryptionClass {
         private BigInteger v;
         private BigInteger mHat;
         private BigInteger m;
-        private BigInteger X;
+        private BigInteger y;
+        private BigInteger s;
         private String mPrime;
+        private BigInteger c1;
+        private BigInteger c2;
         private ArrayList<BigInteger> dArray;
 
         public Encryption() {
@@ -178,7 +185,21 @@ public class EncryptionClass {
             return count;
         }
 
-        public void encryptMessage (ArrayList<BigInteger> privateKey, String userMessage) {
+
+            public void shuffle(String input){
+                List<Character> characters = new ArrayList<Character>();
+                for(char c:input.toCharArray()){
+                    characters.add(c);
+                }
+                StringBuilder output = new StringBuilder(input.length());
+                while(characters.size()!=0){
+                    int randPicker = (int)(Math.random()*characters.size());
+                    output.append(characters.remove(randPicker));
+                }
+                System.out.println(output.toString());
+            }
+
+        public BigInteger[] encryptMessage (ArrayList<BigInteger> privateKey, String userMessage) {
             do {
                 rString = generateBinaryString(userMessage);
                 hamming = BigInteger.valueOf(hammingDistance(rString, 16));
@@ -186,35 +207,70 @@ public class EncryptionClass {
             v = BigInteger.valueOf(userMessage.length()).divide(hamming);
 
             // "Sample message a user may be sending to someone else ,this will be used in visualizing the the encryption process."
-
-            // safety issues with the value of rString?
             String userBinary = userMessage.getBytes().toString();
 
             StringBuilder stringBuilder = new StringBuilder();
 
-            for(int i = 0; i < rString.length(); i++) {
+            for (int i = 0; i < rString.length(); i++) {
                 stringBuilder.append((rString.charAt(i) ^ userBinary.charAt(i)));
             }
 
             mPrime = stringBuilder.toString();
-            
+            stringBuilder.setLength(0);
+            BigInteger n = privateKey.get(privateKey.size() - 2);
+            s = n.subtract(BigInteger.valueOf(userBinary.length())).divide(
+                    BigInteger.valueOf(userBinary.length()).subtract(hamming));
+            String binary = s.toString(2);
+            ArrayList<String> dArray = new ArrayList<>();
+            for (int i = 0; i <= hamming.intValue(); i++) {
+                dArray.add(rString.substring(i, i + hamming.intValue()));
+            }
+            int confuseCounter = Integer.parseInt(rString) - hamming.intValue();
+            while (confuseCounter > 0) {
+                confuseBlock(dArray, privateKey, hamming, v);
+                confuseCounter--;
+            }
+            for (int i = 0; i <= hamming.intValue(); i++) {
+                int temp = Integer.parseInt(dArray.get(i));
+                temp = s.add(BigInteger.valueOf(temp)).intValue();
+                dArray.set(i, Integer.toString(temp));
+            }
+
+            for (int i = 0; i <= hamming.intValue(); i++) {
+                y = y.add(BigInteger.valueOf(Integer.parseInt(dArray.get(i))));
+            }
+
+            c1 = y.pow(privateKey.get(privateKey.size()-1).intValue()).mod(privateKey.get(privateKey.size()-2));
+            c2 = BigInteger.ZERO;
+            for (int i = 1; i <= rString.length(); i++) {
+                // c2 = sum of ai and xi from 1 to k.
+                c2 = c2.add(privateKey.get(i).multiply(BigInteger.valueOf(Character.getNumericValue(rString.charAt(i)))));
+            }
+
+            return new BigInteger[] {c1, c2};
         }
 
-        //1 Generate pseudorandom string X = (x1,...,xk) with hamming weight h such that v = k/h be an integer
-        //hamming weight h such that v = k/h be an integer
+        public void confuseBlock(ArrayList<String> dArray, ArrayList<BigInteger> privateKey, BigInteger hamming, BigInteger v) {
+            int begin = (int) Math.random() * hamming.intValue();
+            for (int i = 0; i < v.intValue(); i++) {
 
-
-        //2 Computes ~m = (d1 || ... || dh)
-
-
-        //3 Using pesudorandom string X=(x1,...,xk) performs a random permutation on the message blocks di,
-        //1 <= i <= h and pad some confuse data blocks to them such that
-
-
-
+            }
+        }
     }
 
+    private class Decryption {
+        private BigInteger c1;
+        private BigInteger c2;
 
+        public Decryption(BigInteger c1, BigInteger c2) {
+            this.c1 = c1;
+            this.c2 = c2;
+        }
+
+        public String decryptMessage(String encryptedMessage, ArrayList<BigInteger> publicKey) {
+            return "";
+        }
+    }
 
 
 
