@@ -120,6 +120,23 @@ public class P2PBroadcastReceiver extends BroadcastReceiver
         }
     }
 
+    public WifiP2pManager getManager() {
+        return manager;
+    }
+
+    public WifiP2pDeviceList getPeers() {
+        return peers;
+    }
+
+    public WifiP2pManager.Channel getChannel() {
+        return channel;
+    }
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+
 }
 
 

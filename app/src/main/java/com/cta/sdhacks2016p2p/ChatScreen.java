@@ -8,6 +8,7 @@ import android.view.View;
 public class ChatScreen extends AppCompatActivity {
 
     WifiP2pDevice recipiant;
+    PeerService pS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
