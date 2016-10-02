@@ -2,6 +2,7 @@ import java.lang.*;
 import java.math.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class EncryptionClass {
 
@@ -118,8 +119,52 @@ public class EncryptionClass {
         //Sender executes the following steps
         private int kSize;
         private char[] pRanStr;
-        private int hamming;
+        private BigInteger hamming;
+        private BigInteger v;
+        private BigInteger mHat;
+        private BigInteger m;
+        private BigInteger X;
+        private BigInteger mPrime;
+        private ArrayList<BigInteger> dArray;
 
+        public Encryption(int kSize) {
+            this.kSize = kSize;
+        }
+
+        private char[] generateString(int size) {
+            char[] temp = new char[size];
+            for (int i = 0; i < size; i++) {
+                temp[i] = generateChar();
+            }
+            return temp;
+        }
+
+        private char generateChar() {
+            int temp = (int) (Math.random() * 64);
+            if (temp < 10) {
+                return (char) (temp + 38);
+            } else if (temp < 36) {
+                return (char) (temp + 55);
+            } else {
+                return (char) (temp + 61);
+            }
+        }
+
+        private BigInteger randomWithinRange(int min, int max) {
+            BigInteger range = BigInteger.valueOf((max-min)+1);
+            return BigInteger.valueOf((long)(Math.random() * range.doubleValue()) + min);
+        }
+
+        private int hammingDistance(char[] arr, int size) {
+            for (int i = 0; i < size; i++) {
+
+            }
+        }
+
+        public void encryptMessage (ArrayList<BigInteger> privateKey) {
+            pRanStr = generateString(kSize);
+            
+        }
 
         //1 Generate pseudorandom string X = (x1,...,xk) with hamming weight h such that v = k/h be an integer
         //hamming weight h such that v = k/h be an integer
