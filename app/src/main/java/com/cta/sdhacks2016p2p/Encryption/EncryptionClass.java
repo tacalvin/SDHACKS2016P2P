@@ -1,5 +1,6 @@
 import java.lang.*;
 import java.math.*;
+import java.util.ArrayList;
 
 public class EncryptionClass {
 
@@ -42,7 +43,7 @@ public class EncryptionClass {
             aArray = new BigInteger[kSize];
         }
 
-        public void createKey(BigInteger[] privateKey, BigInteger[] publicKey) {
+        public void createKey(ArrayList<BigInteger> privateKey, ArrayList<BigInteger> publicKey) {
             // 1. randomly chooose k odd positive integers c1-ck
             for(int i=0; i<kSize-1; i++) {
                 BigInteger tempNum = randomWithinRange(1, Integer.MAX_VALUE);
@@ -79,23 +80,36 @@ public class EncryptionClass {
                 do {
                     q = randomWithinRange(0, Integer.MAX_VALUE);
                 } while (q.isProbablePrime(1));
-            } while (p.minus(BigInteger.valueOf(1).divide(BigInteger.valueOf(2).isProbablePrime(1))) &&
-            q.minus(BigInteger.valueOf(1).divide(BigInteger.valueOf(2).isProbablePrime(1))));
+            } while (p.subtract(BigInteger.valueOf(1)).divide(BigInteger.valueOf(2)).isProbablePrime(1) &&
+            q.subtract(BigInteger.valueOf(1)).divide(BigInteger.valueOf(2)).isProbablePrime(1));
 
-            n = p * q;
-            phiN = (p.minus(BigInteger.valueOf(1)) * q.minus(BigInteger.valueOf(1)));
+            n = p.multiply(q);
+            phiN = (p.subtract(BigInteger.valueOf(1)).multiply(q.subtract(BigInteger.valueOf(1))));
 
             do {
                  e = randomWithinRange(0, Integer.MAX_VALUE);
-            } while (e.compareTo(BigInteger.valueOf(1)) != 1 && e.compareTo(phiN) && phiN.gcd(e) != 1);
+            } while (e.compareTo(BigInteger.valueOf(1)) != 1 && e.compareTo(phiN) != 1 && phiN.gcd(e) !=  BigInteger.valueOf(1));
 
-            d = ExtendedEuclid(1, phiN.intValue());
+            ExtendedEuclid();
+
+            ArrayList<BigInteger>privateTemp = new ArrayList<BigInteger>(Arrays.asList(aArray));
+            privateTemp.add(n);
+            privateTemp.add(e);
+            ArrayList<BigInteger>publicKey = new ArrayList<BigInteger>(Arrays.asList(bArray));
+            publicKey.add(p);
+            publicKey.add(q);
+            publicKey.add(w);
+            publicKey.add(M);
+            privateKey = privateTemp;
+            publicKey = publicTemp;
         }
 
 
         //e.d = 1 mod phi(N)
-        public BigInteger ExtendedEuclid() {
-            d = 
+        public void ExtendedEuclid() {
+            do {
+                d = (BigInteger.valueOf(1).mod(phiN)).divide(e);
+            } while(d.compareTo(BigInteger.valueOf(1) != 1 && d.compareTo(phiN) != 1));
         }
     }
 
